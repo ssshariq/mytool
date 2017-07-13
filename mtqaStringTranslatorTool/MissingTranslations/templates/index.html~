@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>MTQA -Missing String Translations Finder<</title>
+ 
+    
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+ 
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <link href="../static/signup.css" rel="stylesheet">
+    
+  </head>
+ 
+  <body>
+ 	<form action = "result" method = "post">
+    <div class="container">
+      <div class="header">
+        <h3 class="text-muted">Missing String Translations Finder</h3>
+      </div>
+ 
+      <div class="jumbotron">
+        <h2>Find Missing String !!</h2>&nbsp
+        <form class="form-signin">
+        <input type="input" name="email" id="email" class="form-control" placeholder="Merchant Email" required autofocus>
+        <input type="input" name="password" id="password" class="form-control" placeholder="Merchant Password" required autofocus>
+        <br>
+        <input type="input" name="url" id="url" class="form-control" placeholder="Page URL" required autofocus>
+        <input type="input" name="locale" id="locale" class="form-control" placeholder="Locale(s) e.g en_GB, fr_FR, en_IT" required autofocus>
+         <br>
+        <button type="submit" id="search" class="btn btn-lg btn-primary btn-block">Search</button>
+      </form>
+      </div>
+ 
+       
+ 
+      <footer class="footer">
+	<table>
+	<tr>
+	<td width="75%">contact: ssshariq&commat;</td>
+	<td width="25%">&copy; Amazon 2017</td>
+	</tr>
+	</table>
+      </footer>
+ </form>
+    </div>
+  </body>
+</html>
+

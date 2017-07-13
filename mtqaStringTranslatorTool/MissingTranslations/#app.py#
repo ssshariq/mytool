@@ -1,0 +1,79 @@
+from flask import Flask, render_template, request, json
+from pyvirtualdisplay import Display
+import urllib2
+import re
+from selenium import webdriver
+import time
+
+app = Flask(__name__)
+app.config['DEBUG'] = True
+
+@app.route("/")
+def main():
+    return render_template('index.html')
+    
+@app.route('/result', methods = ['POST', 'GET'])
+def showResult():
+   if request.method == 'POST':
+		# read the posted values from the UI
+		_email = request.form['email']
+		_password = request.form['password']
+		_url = request.form['url']
+		_locales = request.form['locale']
+		_allLocales = _locales.split(',')
+ 	      	driver = webdriver.Firefox()
+		driver.get(_url)
+		driver.find_element_by_id("ap_email").send_keys(_email)
+                driver.implicitly_wait(8000)
+		driver.find_element_by_id("ap_password").send_keys(_password)
+                driver.implicitly_wait(8000)
+		driver.find_element_by_id("signInSubmit").click()
+		
+                driver.implicitly_wait(8000)
+                time.sleep(25)
+		driver.get(_url)
+		driver.implicitly_wait(8000)
+		currentUrl = driver.current_url
+		completeList = ''
+		for _locale in _allLocales:
+			if '?' in _url:
+				appendUrl = '&language='+_locale+'&stringDebug=1'
+			else:
+				appendUrl = '?language='+_locale+'&stringDebug=1'
+			page_url = currentUrl+appendUrl
+			driver.get(page_url)
+			driver.implicitly_wait(15)
+			pageSource = driver.page_source
+			source = pageSource.encode('utf-8').replace('\n', '')
+			start  = '<script>'
+			end= '</script>'
+			script_blocks = re.findall('%s(.*?)%s' % (start, end),source)
+			string1 = ' '.join(script_blocks)
+		
+			print("Gaurav: Test Script")
+
+			start1= '\"'+':'+'\"'+'\['
+			start1New= '\"'+':'+'\"'+'null\['
+			end1 = '\]'+'\"'
+
+			string2 = re.findall('%s(.*?)%s' % (start1, end1),string1)
+			string2New = re.findall('%s(.*?)%s' % (start1New, end1),string1)
+			string3 = ' '.join(string2)
+			string3New = ' '.join(string2New)
+			string4 = re.sub(r"{.*}", '', string3)
+			string4New = re.sub(r"{.*}", '', string3New)
+			string5New = '====='+_locale+'====='+' '+string4+string4New
+			completeList = completeList +' '+string5New
+			resultsList = completeList.split(' ')
+			#temp: START: solution for ignoring country-name and swipe-reg string ids
+			filteredList = []
+			for result in resultsList:
+				if not (result.startswith("country-name")) and not (result.startswith("swipe_reg")):
+					filteredList.append(result)
+			#temp: END
+		driver.quit()
+		return render_template("result.html",result = filteredList)#set this back to resultlist once temp solution is done
+         
+     
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=80)
